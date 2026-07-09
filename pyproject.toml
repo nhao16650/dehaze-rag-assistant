@@ -1,0 +1,35 @@
+# 这个文件用于描述当前 Python 项目。
+# 有了它之后，我们可以用 pip install -e .
+# 把当前项目安装到虚拟环境中。
+# 这样 Python 就能自动找到 src/dehaze_rag 这个包。
+
+[build-system]
+# 告诉 pip：这个项目使用 setuptools 来构建
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+# 项目名称，GitHub 上也可以用这个名字
+name = "dehaze-rag-assistant"
+
+# 项目版本号，个人项目初版写 0.1.0 就可以
+version = "0.1.0"
+
+# 项目简介
+description = "A RAG assistant for reading image dehazing papers"
+
+# Python 版本要求
+requires-python = ">=3.10"
+
+
+[tool.setuptools]
+# 告诉 setuptools：
+# 包代码不在项目根目录，而是在 src 文件夹里
+package-dir = {"" = "src"}
+
+
+[tool.setuptools.packages.find]
+# 告诉 setuptools：
+# 去 src 文件夹下自动寻找 Python 包
+where = ["src"]
