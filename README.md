@@ -1,30 +1,51 @@
 # Dehaze RAG Assistant
 
-## 图像去雾论文 RAG 智能问答系统
+## 面向图像去雾文献阅读的 RAG 智能问答系统
 
-本项目是一个面向图像去雾与图像恢复论文阅读场景的 RAG（Retrieval-Augmented Generation）智能问答系统原型。系统支持对论文 PDF 进行文本解析、文本清洗、滑动窗口分块、Embedding 向量化、FAISS 相似度检索，并通过 Gradio 提供可视化问答界面。
+本项目是一个面向 **图像去雾 / 图像恢复论文阅读场景** 的 RAG（Retrieval-Augmented Generation）文献检索问答系统原型。
 
-当前版本主要实现“论文检索问答”功能：用户输入问题后，系统会从本地论文知识库中检索最相关的论文片段，并返回来源文件、页码、相似度和片段内容。
+系统支持对论文 PDF 进行文本解析、文本清洗、滑动窗口分块、Embedding 向量化、FAISS 相似度检索，并通过 Gradio 提供可视化问答界面。用户输入问题后，系统可以从本地论文知识库中检索相关论文片段，并返回来源文件、页码、相似度和片段内容。
 
-> 当前版本如未配置大模型 API，会优先返回检索到的相关论文片段。后续可扩展为“检索片段 + 大模型生成回答”的完整 RAG 问答流程。
+> 当前版本重点实现 RAG 中的“文档解析 + 向量检索 + 可视化展示”流程。  
+> 如未配置大模型 API，系统会返回检索结果摘要和相关论文片段；后续可扩展为“检索片段 + 大模型生成回答”的完整 RAG 问答流程。
 
 ---
 
-## 1. 项目背景
+## 项目展示
 
-在图像去雾、图像恢复等研究方向中，论文数量较多，方法结构、实验数据集和评价指标分散在不同文献中。传统人工阅读方式效率较低，不利于快速定位论文中的关键信息。
+### 首页界面
+
+![Homepage](docs/images/homepage.png)
+
+### 示例 1：Dark Channel Prior 核心思想检索
+
+![Dark Channel Prior Demo](docs/images/demo_dcp.png)
+
+### 示例 2：图像去雾常用数据集检索
+
+![Dataset Demo](docs/images/demo_dataset.png)
+
+### 示例 3：PSNR / SSIM 指标检索
+
+![Metrics Demo](docs/images/demo_metrics.png)
+
+---
+
+## 项目背景
+
+在图像去雾、图像恢复等研究方向中，论文数量较多，方法结构、实验数据集、评价指标和模型对比信息分散在不同文献中。传统人工阅读方式效率较低，不利于快速定位关键信息。
 
 因此，本项目围绕图像去雾论文阅读场景，构建一个轻量级 RAG 文献问答系统，用于辅助检索：
 
 - 论文方法与核心思想
 - 网络结构与模型创新点
-- 实验数据集
+- 图像去雾常用数据集
 - PSNR、SSIM 等评价指标
-- 不同方法之间的对比信息
+- 不同模型或方法之间的对比信息
 
 ---
 
-## 2. 功能特性
+## 功能特性
 
 - 支持批量解析 `papers/` 文件夹中的 PDF 论文
 - 支持 PDF 文本清洗，减少页眉、页脚、下载记录等噪声
@@ -34,25 +55,50 @@
 - 支持用户问题向量化与 Top-K 相似片段检索
 - 支持返回来源文件、页码、相似度和相关论文片段
 - 使用 Gradio 搭建可视化问答界面
-- 支持后续接入大模型 API，实现自然语言总结回答
+- 预留大模型 API 接口，后续可扩展为自然语言总结回答
 
 ---
 
-## 3. 技术栈
+## 技术栈
 
 | 模块 | 技术 |
 |---|---|
 | 编程语言 | Python |
 | PDF 解析 | PyMuPDF |
+| 文本清洗与分块 | 正则表达式、滑动窗口切分 |
 | 文本向量化 | SentenceTransformers |
 | 向量检索 | FAISS |
 | 数值计算 | NumPy |
 | Web 界面 | Gradio |
-| 项目管理 | PyCharm / Git / GitHub |
+| 项目管理 | PyCharm、Git、GitHub |
 
 ---
 
-## 4. 项目结构
+## 系统流程
+
+```text
+论文 PDF
+   ↓
+PDF 文本解析
+   ↓
+文本清洗与滑动窗口分块
+   ↓
+SentenceTransformers 向量化
+   ↓
+FAISS 本地向量库
+   ↓
+用户输入问题
+   ↓
+问题向量化
+   ↓
+Top-K 相似片段检索
+   ↓
+返回来源文件、页码、相似度和相关论文片段
+```
+
+---
+
+## 项目结构
 
 ```text
 dehaze-rag-assistant/
@@ -61,13 +107,15 @@ dehaze-rag-assistant/
 │   └── README.md
 │
 ├── data/
-│   ├── index/                       # 向量库文件，运行后自动生成
+│   ├── index/                       # 向量库文件，运行 build_index 后自动生成
 │   └── logs/                        # 日志文件
 │
 ├── docs/
 │   └── images/                      # 项目截图
 │       ├── homepage.png
-│       └── demo_result.png
+│       ├── demo_dcp.png
+│       ├── demo_dataset.png
+│       └── demo_metrics.png
 │
 ├── src/
 │   └── dehaze_rag/
@@ -91,9 +139,16 @@ dehaze-rag-assistant/
 
 ---
 
-## 5. 快速开始
+## 快速开始
 
-### 5.1 创建虚拟环境
+### 1. 克隆项目
+
+```bash
+git clone https://github.com/nhao16650/dehaze-rag-assistant.git
+cd dehaze-rag-assistant
+```
+
+### 2. 创建虚拟环境
 
 ```bash
 python -m venv .venv
@@ -105,17 +160,13 @@ Windows PowerShell 激活虚拟环境：
 .venv\Scripts\activate
 ```
 
----
-
-### 5.2 安装依赖
+### 3. 安装依赖
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-### 5.3 安装当前项目
+### 4. 安装当前项目
 
 ```bash
 pip install -e .
@@ -129,7 +180,9 @@ ModuleNotFoundError: No module named 'dehaze_rag'
 
 ---
 
-### 5.4 放入论文 PDF
+## 使用方法
+
+### 1. 放入论文 PDF
 
 将图像去雾或图像恢复方向论文 PDF 放入：
 
@@ -146,11 +199,13 @@ papers/
 └── MB-TaylorFormer.pdf
 ```
 
-注意：论文 PDF 不建议上传到 GitHub，因此 `.gitignore` 中默认忽略了 `papers/*.pdf`。
+注意：论文 PDF 不建议上传到 GitHub，因此 `.gitignore` 中默认忽略了：
 
----
+```text
+papers/*.pdf
+```
 
-### 5.5 测试 PDF 解析
+### 2. 测试 PDF 解析
 
 ```bash
 python test_pdf_loader.py
@@ -162,15 +217,13 @@ python test_pdf_loader.py
 PDF 解析成功！共读取到 xx 页有效文本。
 ```
 
----
-
-### 5.6 构建向量知识库
+### 3. 构建向量知识库
 
 ```bash
 python -m dehaze_rag.build_index
 ```
 
-该命令会依次完成：
+该命令会完成：
 
 ```text
 读取 PDF
@@ -196,9 +249,7 @@ chunks.json
 dehaze_faiss.index
 ```
 
----
-
-### 5.7 命令行问答测试
+### 4. 命令行问答测试
 
 ```bash
 python -m dehaze_rag.query_engine
@@ -218,9 +269,7 @@ What datasets are commonly used in image dehazing?
 What are PSNR and SSIM used for?
 ```
 
----
-
-### 5.8 启动 Gradio 网页界面
+### 5. 启动 Gradio 网页界面
 
 ```bash
 python -m dehaze_rag.app
@@ -236,31 +285,7 @@ Running on local URL: http://127.0.0.1:7861
 
 ---
 
-## 6. 页面展示
-
-### 首页界面
-
-如果你已经保存截图，可以放在：
-
-```text
-docs/images/homepage.png
-```
-
-然后在这里显示：
-
-```markdown
-![Homepage](docs/images/homepage.png)
-```
-
-### 问答结果示例
-
-```markdown
-![Demo Result](docs/images/demo_result.png)
-```
-
----
-
-## 7. 示例问题
+## 示例问题
 
 当前系统更适合使用英文问题检索英文论文，例如：
 
@@ -288,23 +313,23 @@ sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
 ---
 
-## 8. 当前版本效果
+## 当前版本效果
 
 当前版本已经实现：
 
 - PDF 文本解析
-- 文本清洗与分块
+- 文本清洗与滑动窗口分块
 - Embedding 向量化
 - FAISS 本地向量检索
 - Top-K 相关论文片段返回
 - 来源文件、页码、相似度展示
-- Gradio 可视化界面
+- Gradio 可视化问答界面
 
 当前版本暂未强制接入大模型 API，因此默认返回检索结果摘要和相关论文片段。
 
 ---
 
-## 9. 后续优化方向
+## 后续优化方向
 
 - 接入 DeepSeek、通义千问或 OpenAI 兼容 API，实现自然语言总结回答
 - 增加中文问题支持，使用多语言 Embedding 模型
@@ -317,26 +342,7 @@ sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2
 
 ---
 
-## 10. 项目运行截图
-
-建议在 GitHub 上传前添加两张截图：
-
-```text
-docs/images/homepage.png
-docs/images/demo_result.png
-```
-
-然后取消下面两行注释：
-
-<!--
-![Homepage](docs/images/homepage.png)
-
-![Demo Result](docs/images/demo_result.png)
--->
-
----
-
-## 11. 简历描述参考
+## 简历描述参考
 
 本项目可在简历中描述为：
 
@@ -352,6 +358,14 @@ docs/images/demo_result.png
 
 ---
 
-## 12. License
+## Notes
+
+- 本项目不会上传论文 PDF 文件，用户需要自行将论文放入 `papers/` 文件夹。
+- 本项目不会上传本地生成的向量库文件，用户可通过 `python -m dehaze_rag.build_index` 重新生成。
+- 如果后续接入大模型 API，请勿将 API Key 写入代码或上传到 GitHub。
+
+---
+
+## License
 
 This project is for academic learning and internship portfolio demonstration.
