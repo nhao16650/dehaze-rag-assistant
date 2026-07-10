@@ -1,0 +1,64 @@
+[
+  {
+    "id": "dcp_main_idea_cn",
+    "question": "暗通道先验的核心思想是什么？",
+    "focus_keywords": ["DCP", "Dark Channel Prior"],
+    "strict_source_filter": true,
+    "expected_source_keywords": ["DCP"],
+    "expected_text_keywords": ["dark channel prior", "observation"]
+  },
+  {
+    "id": "dcp_main_idea_en",
+    "question": "What is the main idea of Dark Channel Prior?",
+    "focus_keywords": ["DCP", "Dark Channel Prior"],
+    "strict_source_filter": true,
+    "expected_source_keywords": ["DCP"],
+    "expected_text_keywords": ["dark channel prior", "observation"]
+  },
+  {
+    "id": "dcp_limitation_cn",
+    "question": "DCP 有哪些局限性或不足？",
+    "focus_keywords": ["DCP", "Dark Channel Prior"],
+    "strict_source_filter": true,
+    "expected_source_keywords": ["DCP"],
+    "expected_text_keywords": [
+      "dark channel prior",
+      "statistic",
+      "particular images",
+      "atmospheric light",
+      "not work"
+    ]
+  },
+  {
+    "id": "gridformer_architecture_cn",
+    "question": "GridFormer 是什么架构？",
+    "focus_keywords": ["GridFormer"],
+    "strict_source_filter": true,
+    "expected_source_keywords": ["GridFormer"],
+    "expected_text_keywords": ["GridFormer", "Grid Fusion Module", "Grid Head"]
+  },
+  {
+    "id": "gridformer_limitation_cn",
+    "question": "GridFormer 有什么缺点或不足？",
+    "focus_keywords": ["GridFormer"],
+    "strict_source_filter": true,
+    "expected_source_keywords": ["GridFormer"],
+    "expected_text_keywords": ["overhead", "complex", "ablation"]
+  },
+  {
+    "id": "metrics_psnr_ssim_cn",
+    "question": "PSNR 和 SSIM 是用来评价什么的？",
+    "focus_keywords": [],
+    "strict_source_filter": false,
+    "expected_source_keywords": [],
+    "expected_text_keywords": ["PSNR", "SSIM"]
+  },
+  {
+    "id": "datasets_dehazing_cn",
+    "question": "图像去雾常用的数据集有哪些？",
+    "focus_keywords": [],
+    "strict_source_filter": false,
+    "expected_source_keywords": [],
+    "expected_text_keywords": ["dataset", "datasets", "O-HAZE", "I-HAZE", "SOTS"]
+  }
+]
